@@ -17,8 +17,8 @@
             <li role="menuitem" ng-repeat="(key, $value) in ctrl.mapFields">
               <a class="no-padding-search-fields">
                 <label ng-click="$event.stopPropagation()">
-                  <input ng-if="$value.type == 'checkbox'" type="{{::$value.type}}" ng-model="$value.checkbox" />
-                  <input ng-if="$value.type == 'radio'" type="{{::$value.type}}" name="inputFilter" ng-model="ctrl.radioValue" ng-value="$value.field" />
+                  <input ng-if="$value.type == 'checkbox'" type="{{::$value.type}}" ng-model="$value.checkbox"/>
+                  <input ng-if="$value.type == 'radio'" type="{{::$value.type}}" name="inputFilter" ng-model="ctrl.radioValue" ng-value="$value.field" checked="{{::$value.selected}}"/>
                   <span><b>{{::$value.label}}</b></span>
                 </label>
               </a>
@@ -68,11 +68,12 @@
               field     = element.attr('field') ? element.attr('field') : '',
               checkbox  = !!$scope.$eval(element.attr('select')),
               type      = element.attr('radio') ? 'radio' : 'checkbox',
+              selected  = element.attr('radio') && !!$scope.$eval(element.attr('select')),
               label     = element.attr('label') ? $interpolate(element.attr('label'))(parentContext) : field.charAt(0).toUpperCase().concat(field.slice(1));
 
           if(!field)      console.error(FIELD_ERR)
           if(checkbox)    alreadySelected = true
-          ctrl.mapFields[field] = { checkbox, label, field, type}
+          ctrl.mapFields[field] = { checkbox, label, field, type, selected}
         })
 
         if(!alreadySelected){
