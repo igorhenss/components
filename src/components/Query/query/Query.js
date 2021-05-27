@@ -74,7 +74,7 @@
 
           if(!field)      console.error(FIELD_ERR)
           if(checkbox)    alreadySelected = true
-          ctrl.mapFields[field] = { checkbox, label, field, type, selected}
+          ctrl.mapFields[field] = { checkbox, label, field, type, selected, radio}
         })
 
         if(!alreadySelected){
