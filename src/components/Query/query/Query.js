@@ -18,7 +18,7 @@
               <a class="no-padding-search-fields">
                 <label ng-click="$event.stopPropagation()">
                   <input ng-if="$value.type == 'checkbox'" type="{{::$value.type}}" ng-model="$value.checkbox"/>
-                  <input ng-if="$value.type == 'radio'" type="{{::$value.type}}" ng-model="$value.radio"/>
+                  <input ng-if="$value.type == 'radio'" type="{{::$value.type}}" ng-model="$value.radio" checked="$value.radio"/>
                   <span><b>{{::$value.label}}</b></span>
                 </label>
               </a>
