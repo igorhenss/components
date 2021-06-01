@@ -29,7 +29,31 @@
         </div>
     </div>
 </div>
-``` 
+```
+
+### Search Field com tipo radio e checkbox
+
+```html
+<div class="type-radio">
+    <gumga-query id="transmissionGumgaSearch" search="search(field,param)">
+        <search-field type="radio" field="valor field" label="valor label" select="false"></search-field>
+
+        <search-field type="radio" field="valor-field" label="valor-label" select="true"></search-field>
+
+        <search-field type="radio" field="valor-field" label="valor label" select="false"></search-field>
+    </gumga-query>
+</div>
+
+<div class="type-checkbox">
+    <gumga-query id="transmissionGumgaSearch" search="search(field,param)">
+        <search-field field="valor field" label="valor label" select="false"></search-field>
+
+        <search-field field="valor field" label="valor label" select="true"></search-field>
+
+        <search-field field="valor field" label="valor label" select="false"></search-field>
+    </gumga-query>
+</div>
+```
 
 *Em caso de quebra de layout, lembre-se que quando o resultado da soma dos .col-md-x for 12, deve-se usar uma .row* para divisão.
 
@@ -50,3 +74,5 @@ O componente gumgaQuery é utilizado para realizar buscas, seja buscas simples o
 - **field**: O parâmetro `field` irá conter uma string que será utilizada na hora de fazer a busca.
 - **label**: O parâmetro `label` irá conter uma string que será utilizada para mostrar no componente.
 - **select**: O parâmetro `select` irá conter um valor `booleano` que será utilizado para que o campo seja selecionado por padrão. Caso nenhum campo contenha o parâmetro `select`, o primeiro será selecionado por padrão.
+- **type**: O parâmetro `type` irá conter um valor do tipo *string* e o mesmo é do tipo opcional. O valor esperado caso seja utilizado é referente ao tipo do input.
+Ex: Se você desejar que o input seja do tipo **radio** basta adicionar o `type="radio"`, porém se desejar que o input seja do tipo **checkbox** basta não utilizar a propriedade **type**.
