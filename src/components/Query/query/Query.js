@@ -17,8 +17,10 @@
             <li role="menuitem" ng-repeat="(key, $value) in ctrl.mapFields">
               <a class="no-padding-search-fields">
                 <label ng-click="$event.stopPropagation()">
-                  <input ng-if="$value.type == 'checkbox'" type="{{::$value.type}}" ng-model="$value.checkbox"/>
-                  <input ng-if="$value.type == 'radio'" type="{{::$value.type}}" name="inputFilter" ng-model="$value.radio" checked="{{::$value.radio}}"/>
+                  <input ng-if="$value.type === 'checkbox'" type="{{::$value.type}}" ng-model="$value.checked"/>
+
+                  <input ng-if="$value.type === 'radio'" type="{{::$value.type}}" name="inputFilter" ng-model="$value.checked" ng-value="true"/>
+
                   <span><b>{{::$value.label}}</b></span>
                 </label>
               </a>
@@ -28,7 +30,7 @@
             <span class="glyphicon glyphicon-filter"></span>
           </button>
           <button class="btn btn-primary" type="button" ng-click="ctrl.doSearch(ctrl.searchField)">
-            <span> {{::ctrl.searchText}} </span>           
+            <span> {{::ctrl.searchText}} </span>
             <span class="glyphicon glyphicon-search rotate-search-glyph"></span>
           </button>
         </span>
@@ -57,29 +59,27 @@
         let alreadySelected = false,
             parentContext   = $scope.$parent;
 
-        ctrl.placeholder =  $attrs['placeholder'] ? $interpolate($attrs['placeholder'])(parentContext) : "";   
-           
+        ctrl.placeholder =  $attrs['placeholder'] ? $interpolate($attrs['placeholder'])(parentContext) : "";
+
         [].slice.call(transcludeElement).forEach(value => {
 
           if(value && value.nodeName === 'ADVANCED-SEARCH-FIELD') ctrl.possibleAdvancedFields.push(value.outerHTML)
           if(!value || value.nodeName !== 'SEARCH-FIELD') return
 
-          let element   = angular.element(value),
-              field     = element.attr('field') ? element.attr('field') : '',
-              checkbox  = !!$scope.$eval(element.attr('select')),
-              radio     = !!$scope.$eval(element.attr('checked')),
-              type      = element.attr('radio') ? 'radio' : 'checkbox',
-              selected  = element.attr('radio') && !!$scope.$eval(element.attr('select')),
-              label     = element.attr('label') ? $interpolate(element.attr('label'))(parentContext) : field.charAt(0).toUpperCase().concat(field.slice(1));
+          let element = angular.element(value),
+              field = element.attr('field') ? element.attr('field') : '',
+              checked = !!$scope.$eval(element.attr('select')),
+              type = element.attr('type') ? 'radio' : 'checkbox',
+              label = element.attr('label') ? $interpolate(element.attr('label'))(parentContext) : field.charAt(0).toUpperCase().concat(field.slice(1));
 
           if(!field)      console.error(FIELD_ERR)
-          if(checkbox)    alreadySelected = true
-          ctrl.mapFields[field] = { checkbox, label, field, type, selected, radio}
+          if(checked)    alreadySelected = true
+          ctrl.mapFields[field] = { checked, label, field, type }
         })
 
         if(!alreadySelected){
           for(var first in ctrl.mapFields) break
-          if(first) ctrl.mapFields[first].checkbox = true
+          if(first) ctrl.mapFields[first].checked = true
         }
        })
 
@@ -96,12 +96,11 @@
       ctrl.searchField        = $scope.$parent.searchField ? $scope.$parent.searchField : ''
       $scope.inputMaxLength   = hasAttr('inputMaxLength') ? $attrs['inputMaxLength'] : ''
       $scope.proxySave        = (query, name) => ctrl.saveQuery({ query, name })
-      ctrl.radioValue       = '';
 
       if(ctrl.advancedSearch) ctrl.compileFilter()
 
       function compileFilter(){
-        let template  = `<gumga-filter-core ng-show="openFilter" is-open="true" search="ctrl.proxySearch(param)" 
+        let template  = `<gumga-filter-core ng-show="openFilter" is-open="true" search="ctrl.proxySearch(param)"
 ${$attrs.saveQuery ? 'save-query="saveQuery(query, name)"' : ''}is-query="true">${ctrl.possibleAdvancedFields.reduce(((prev, next) => prev += next), '')}
 </gumga-filter-core>`,
 
@@ -113,14 +112,7 @@ ${$attrs.saveQuery ? 'save-query="saveQuery(query, name)"' : ''}is-query="true">
         if(event.keyCode !== 13 || inputType == 'TYPEAHEAD') return;
         let field = Object
                     .keys(ctrl.mapFields)
-                    .filter(value => {
-                      if (ctrl.mapFields[value].type == 'radio' && value == ctrl.radioValue) {
-                        return true;
-                      }
-                      if (ctrl.mapFields[value].type == 'checkbox') {
-                        return !!ctrl.mapFields[value].checkbox;
-                      }
-                    })
+                    .filter(value => !!ctrl.mapFields[value].checked)
                     .reduce((prev, next) => (prev += next.concat(',')), '')
                     .slice(0, -1)
 
