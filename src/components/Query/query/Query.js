@@ -19,7 +19,9 @@
                 <label ng-click="$event.stopPropagation()">
                   <input ng-if="$value.type === 'checkbox'" type="{{::$value.type}}" ng-model="$value.checked"/>
 
-                  <input ng-if="$value.type === 'radio'" type="{{::$value.type}}" name="inputFilter" ng-model="$value.checked" ng-value="true"/>
+                  <input ng-if="$value.type === 'radio'" type="{{::$value.type}}" name="inputFilter"
+                        ng-model="ctrl.radioValue"
+                        ng-value="$value.field" />
 
                   <span><b>{{::$value.label}}</b></span>
                 </label>
@@ -50,9 +52,9 @@
             FIELD_ERR           = 'É necessário um parâmetro field na tag search-field.[<search-field field="foo"></search-field>]',
             SEARCH_ERR          = 'É necessário passar uma função para o atributo "search". [search="foo(field, param)"]'
 
-      ctrl.mapFields              = {}
-      ctrl.possibleAdvancedFields = []
-
+      ctrl.mapFields              = {};
+      ctrl.possibleAdvancedFields = [];
+      ctrl.radioValue;
       if(!hasAttr('search')) console.error(SEARCH_ERR)
 
       $transclude((transcludeElement) => {
@@ -74,6 +76,8 @@
 
           if(!field)      console.error(FIELD_ERR)
           if(checked)    alreadySelected = true
+          if(type == 'radio' && checked) ctrl.radioValue = field
+
           ctrl.mapFields[field] = { checked, label, field, type }
         })
 
@@ -110,12 +114,17 @@ ${$attrs.saveQuery ? 'save-query="saveQuery(query, name)"' : ''}is-query="true">
 
       function doSearch(param, event = { keyCode: 13 }, inputType){
         if(event.keyCode !== 13 || inputType == 'TYPEAHEAD') return;
-        let field = Object
-                    .keys(ctrl.mapFields)
-                    .filter(value => !!ctrl.mapFields[value].checked)
-                    .reduce((prev, next) => (prev += next.concat(',')), '')
-                    .slice(0, -1)
 
+        let field = '';
+        if (ctrl.radioValue){
+            field = ctrl.radioValue;
+        } else {
+            field = Object
+                        .keys(ctrl.mapFields)
+                        .filter(value => !!ctrl.mapFields[value].checked)
+                        .reduce((prev, next) => (prev += next.concat(',')), '')
+                        .slice(0, -1)
+        }
         if(field.length === 0) return
         ctrl.search({ field, param })
       }
