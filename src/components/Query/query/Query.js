@@ -115,10 +115,8 @@ ${$attrs.saveQuery ? 'save-query="saveQuery(query, name)"' : ''}is-query="true">
       function doSearch(param, event = { keyCode: 13 }, inputType){
         if(event.keyCode !== 13 || inputType == 'TYPEAHEAD') return;
 
-        let field = '';
-        if (ctrl.radioValue){
-            field = ctrl.radioValue;
-        } else {
+        let field = ctrl.radioValue;
+        if (!ctrl.radioValue) {
             field = Object
                         .keys(ctrl.mapFields)
                         .filter(value => !!ctrl.mapFields[value].checked)
