@@ -9,7 +9,7 @@
 	 */
 	function Notification($http,$q){
 		var token = window.sessionStorage.getItem('token');
-		var url = 'https://security-api-notifications.anymarket.vpc:8084/security-api/notifications';
+		var url = 'https://gumga.anymarket.com.br/security-api/notifications';
 		var eventSource;
 
 		this.getSource = getSource;
